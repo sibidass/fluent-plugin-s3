@@ -147,6 +147,8 @@ module Fluent::Plugin
     config_param :sse_customer_key_md5, :string, default: nil, secret: true
     desc "AWS SDK uses MD5 for API request/response by default"
     config_param :compute_checksums, :bool, default: nil # use nil to follow SDK default configuration
+    desc "Specifies algorithm to compute checksum(SHA1,SHA256)"
+    config_param :checksum_algorithm, :string, default: nil # use default SDK configuration
     desc "Signature version for API Request (s3,v4)"
     config_param :signature_version, :string, default: nil # use nil to follow SDK default configuration
     desc "Given a threshold to treat events as delay, output warning logs if delayed events were put into s3"
@@ -358,6 +360,7 @@ module Fluent::Plugin
           content_type: @compressor.content_type,
           storage_class: @storage_class,
         }
+        put_options[:checksum_algorithm] = @checksum_algorithm if @checksum_algorithm
         put_options[:server_side_encryption] = @use_server_side_encryption if @use_server_side_encryption
         put_options[:ssekms_key_id] = @ssekms_key_id if @ssekms_key_id
         put_options[:sse_customer_algorithm] = @sse_customer_algorithm if @sse_customer_algorithm
